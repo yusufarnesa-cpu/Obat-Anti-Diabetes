@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Medical Study Companion | Blok Endokrin - Farmakoterapi Obat Anti Diabetik (PERKENI)</title>
+    <!-- Google Fonts & Tailwind CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        medical: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .smooth-scroll { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-track { background: #1e293b; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 smooth-scroll transition-colors duration-300">
+
+    <!-- Sticky Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <span class="bg-medical-600 text-white p-2 rounded-xl font-bold text-lg shadow-md">🩺</span>
+                <div>
+                    <h1 class="text-sm font-bold tracking-tight text-slate-900 dark:text-white">MED-COMPANION <span class="text-medical-600">ENDOCRINE</span></h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Blok Endokrin & Metabolik - Farmakoterapi Obat Anti Diabetik (OAD & Insulin)</p>
+                </div>
+            </div>
+
+            <!-- Search Bar & Progress -->
+            <div class="flex items-center space-x-4 flex-1 max-w-md mx-auto">
+                <div class="relative w-full">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Cari golongan obat, sulfonilurea, metformin, insulin, glp-1..." class="w-full pl-10 pr-4 py-1.5 text-sm bg-slate-100 dark:bg-slate-700/50 border border-transparent dark:border-slate-600 rounded-lg focus:outline-none focus:border-medical-500 dark:text-white placeholder-slate-400">
+                </div>
+            </div>
+
+            <!-- Controls (Theme & Progress Indicator) -->
+            <div class="flex items-center space-x-3">
+                <div class="hidden md:block text-xs font-medium text-slate-600 dark:text-slate-300">
+                    Progress: <span id="progressText" class="font-bold text-medical-600">0%</span>
+                </div>
+                <button onclick="toggleDarkMode()" id="themeToggle" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition">
+                    Mode
+                </button>
+            </div>
+        </div>
+        <div class="w-full bg-slate-200 dark:bg-slate-700 h-1">
+            <div id="progressBar" class="bg-medical-600 h-1 w-0 transition-all duration-300"></div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="hidden lg:block lg:col-span-1 space-y-6">
+            <div class="sticky top-24 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Daftar Isi Materi</h3>
+                <nav class="space-y-1 text-sm">
+                    <a href="#overview" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">1. Pengantar & Klasifikasi OAD</a>
+                    <a href="#sulfonylurea" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">2. Sulfonilurea & Glinid</a>
+                    <a href="#metformin" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">3. Biguanid (Metformin) & TZD</a>
+                    <a href="#others" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">4. DPP-4i, SGLT-2i & Acarbose</a>
+                    <a href="#insulin" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">5. Insulin & GLP-1 RA</a>
+                    <a href="#quiz-section" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">6. Latihan 10 Soal Ujian</a>
+                    <a href="#quick-review" class="block px-3 py-2 rounded-lg hover:bg-medical-50 dark:hover:bg-slate-700 hover:text-medical-600 font-medium transition">7. Quick Review (5 Menit)</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="lg:col-span-3 space-y-8 searchable-content">
+
+            <!-- 1. COVER / TITLE & KLASIFIKASI OAD -->
+            <section id="overview" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <span class="bg-medical-100 text-medical-800 dark:bg-medical-900/50 dark:text-medical-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Topik Farmakologi Endokrin</span>
+                        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mt-2">Farmakoterapi Obat Anti Diabetik Oral (OAD) & Suntik</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Dosen Pengampu: Devi Usdiana Rosyidah, M.Sc., Apt. | Laboratorium Farmakologi FK UMS</p>
+                    </div>
+                    <div class="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-xl text-right">
+                        <span class="text-xs text-slate-500 dark:text-slate-400 block">Status Belajar</span>
+                        <span class="text-sm font-bold text-medical-600">🔥 HIGH-YIELD EXAM TOPIC</span>
+                    </div>
+                </div>
+
+                <!-- Learning Objectives Checklist -->
+                <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-xl border border-slate-100 dark:border-slate-700">
+                    <h3 class="font-bold text-slate-800 dark:text-white text-sm mb-3">Target Pembelajaran (Checklist Belajar):</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="rounded text-medical-600 focus:ring-medical-500"> <span>Memahami mekanisme kerja masing-masing golongan obat antidiabetik oral</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="rounded text-medical-600 focus:ring-medical-500"> <span>Menguasai indikasi, efek samping utama, serta kontraindikasi klinis</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="rounded text-medical-600 focus:ring-medical-500"> <span>Mengetahui profil farmakokinetik (metabolisme dan ekskresi organ)</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="rounded text-medical-600 focus:ring-medical-500"> <span>Menganalisis algoritma terapi insulin dan sediaan eksogen</span></label>
+                    </div>
+                </div>
+
+                <!-- Core Theory -->
+                <div class="space-y-4">
+                    <div class="border-l-4 border-medical-500 bg-medical-50/50 dark:bg-slate-700/20 p-5 rounded-r-xl space-y-2">
+                        <h4 class="font-bold text-medical-800 dark:text-medical-400">1. Pengantar Farmakoterapi Diabetes</h4>
+                        <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                            Pengelolaan farmakologis diabetes melitus tipe 2 ditujukan untuk mengendalikan kadar glukosa darah, memperbaiki resistensi insulin, atau merangsang sekresi insulin. Pemilihan obat didasarkan pada efikasi, profil keamanan organ (khususnya ginjal dan jantung), serta ada tidaknya komorbiditas.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. SULFONILUREA & GLINID -->
+            <section id="sulfonylurea" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <div class="border-b border-slate-200 dark:border-slate-700 pb-4">
+                    <span class="text-medical-600 font-bold text-xs uppercase tracking-wider">Secretagogues</span>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-1">Golongan Pemacu Sekresi Insulin: Sulfonilurea & Glinid</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-600 dark:text-slate-300">
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h4 class="font-bold text-medical-700 dark:text-medical-400">💊 Sulfonilurea</h4>
+                        <ul class="list-disc pl-4 text-xs space-y-2">
+                            <li><b>Mekanisme Kerja:</b> Berikatan dengan reseptor K-ATP pada sel beta pankreas, memicu depolarisasi membran, membuka kanal kalsium, dan merangsang sekresi insulin bebas tanpa dipengaruhi kadar glukosa darah.</li>
+                            <li><b>Generasi Utama:</b> Generasi I (tolbutamid, klorpropamid) dan Generasi II (glibenklamid, glipizid, gliklazid, glimepirid, gliquidon).</li>
+                            <li><b>Efek Samping Utama:</b> Hipoglikemia (bisa hingga koma, terutama pada lansia/gangguan ginjal) dan peningkatan berat badan.</li>
+                            <li><b>Catatan Klinis Kunci:</b> Gliquidone sangat aman pada pasien gagal ginjal kronik karena 95% diekskresikan melalui empedu dan 5% lewat ginjal. Glibenklamid memiliki risiko hipoglikemia lebih tinggi karena masa kerja panjang.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h4 class="font-bold text-medical-700 dark:text-medical-400">⚡ Glinid (Meglitinid)</h4>
+                        <ul class="list-disc pl-4 text-xs space-y-2">
+                            <li><b>Mekanisme Kerja:</b> Cara kerja mirip sulfonilurea (menutup kanal K-ATP sel beta), namun dengan penekanan pada peningkatan sekresi insulin fase pertama yang cepat.</li>
+                            <li><b>Anggota Golongan:</b> Repaglinid (derivat asam benzoat) dan Nateglinid (derivat fenilalanin).</li>
+                            <li><b>Indikasi Utama:</b> Sangat efektif untuk mengatasi lonjakan hiperglikemia postprandial (setelah makan).</li>
+                            <li><b>Farmakokinetik:</b> Diabsorpsi sangat cepat dan diekskresi cepat melalui hati, dikonsumsi sesaat sebelum makan utama.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. METFORMIN & TZD -->
+            <section id="metformin" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <div class="border-b border-slate-200 dark:border-slate-700 pb-4">
+                    <span class="text-medical-600 font-bold text-xs uppercase tracking-wider">Insulin Sensitizers</span>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-1">Golongan Peningkat Sensitivitas Insulin: Biguanid & TZD</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-600 dark:text-slate-300">
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h4 class="font-bold text-medical-700 dark:text-medical-400">🟢 Biguanid (Metformin - Lini Pertama)</h4>
+                        <ul class="list-disc pl-4 text-xs space-y-2">
+                            <li><b>Mekanisme Kerja:</b> Menurunkan produksi glukosa hepatik (glukoneogenesis) dan memperbaiki ambilan glukosa di jaringan perifer (otot & adipose).</li>
+                            <li><b>Status Klinis:</b> Merupakan obat pilihan pertama (*first-line*) pada sebagian besar pasien DM Tipe 2. Tidak menyebabkan hipoglikemia jika digunakan tunggal.</li>
+                            <li><b>Efek Samping & Risiko:</b> Gangguan saluran cerna (dispepsia, diare, *metallic taste*). Risiko serius langka: *Metformin-Associated Lactic Acidosis* (MALA).</li>
+                            <li><b>Kontraindikasi:</b> GFR &lt; 30 mL/menit, gangguan hati berat, serta kondisi hipoksemia (sepsis, syok, gagal jantung berat).</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h4 class="font-bold text-medical-700 dark:text-medical-400">🟠 Tiazolidinedion (TZD / Glitazon)</h4>
+                        <ul class="list-disc pl-4 text-xs space-y-2">
+                            <li><b>Mekanisme Kerja:</b> Agonis reseptor nuklear PPAR-gamma (*Peroxisome Proliferator Activated Receptor Gamma*), menurunkan resistensi insulin perifer.</li>
+                            <li><b>Anggota Golongan:</b> Pioglitazone dan rosiglitazone.</li>
+                            <li><b>Efek Samping Utama:</b> Peningkatan berat badan, retensi cairan tubuh (edema).</li>
+                            <li><b>Kontraindikasi Ketat:</b> Dikontraindikasikan pada pasien gagal jantung (NYHA Kelas III-IV) karena dapat memperberat retensi cairan, serta dihindari pada riwayat kanker kandung kemih (pioglitazon).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. DPP-4i, SGLT-2i & ACARBOSE -->
+            <section id="others" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <div class="border-b border-slate-200 dark:border-slate-700 pb-4">
+                    <span class="text-medical-600 font-bold text-xs uppercase tracking-wider">Incretin, SGLT-2 & Alpha-Glucosidase Inhibitors</span>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-1">Penghambat DPP-4, SGLT-2, & Alfa-Glukosidase</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-600 dark:text-slate-300">
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+                        <h5 class="font-bold text-medical-700 dark:text-medical-400 text-xs">🔹 Penghambat SGLT-2</h5>
+                        <p class="text-xs">Menghambat reabsorpsi glukosa di tubulus proksimal ginjal, membuang glukosa lewat urin (glikosuria). Memberikan manfaat kardioprotektif & nefrotektif, menurunkan BB dan tekanan darah. Contoh: Dapagliflozin, Empagliflozin. ES: Infeksi saluran kemih/genital.</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+                        <h5 class="font-bold text-medical-700 dark:text-medical-400 text-xs">🔹 Penghambat DPP-4</h5>
+                        <p class="text-xs">Mencegah degradasi hormon inkretin (GLP-1 & GIP) oleh enzim DPP-4, sehingga meningkatkan sekresi insulin dependen-glukosa dan menekan glukagon. Bersifat netral terhadap berat badan. Contoh: Sitagliptin, Vildagliptin, Linagliptin.</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+                        <h5 class="font-bold text-medical-700 dark:text-medical-400 text-xs">🔹 Penghambat Alfa-Glukosidase</h5>
+                        <p class="text-xs">Menghambat enzim alfa-glukosidase di usus halus, memperlambat absorpsi polisakarida/sukrosa postprandial. Contoh: Acarbose. ES khas: Flatulen, perut kembung (*bloating*), diare akibat fermentasi sisa karbohidrat di kolon.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. INSULIN & GLP-1 RA -->
+            <section id="insulin" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <div class="border-b border-slate-200 dark:border-slate-700 pb-4">
+                    <span class="bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Injectable Therapies</span>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white mt-2">Terapi Injeksi: Insulin Eksogen & Agonis Reseptor GLP-1</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-600 dark:text-slate-300">
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h4 class="font-bold text-medical-700 dark:text-medical-400">💉 Klasifikasi & Profil Insulin Eksogen</h4>
+                        <ul class="list-disc pl-4 text-xs space-y-2">
+                            <li><b>Kerja Cepat / Rapid-Acting (Prandial):</b> Lispro, Aspart, Glulisine. Awitan 5-15 menit, untuk mengontrol lonjakan gula darah pascamakan.</li>
+                            <li><b>Kerja Pendek / Short-Acting:</b> Regular / Human Soluble Insulin (Actrapid, Humulin R). Diberikan 30 menit sebelum makan.</li>
+                            <li><b>Kerja Menengah / Intermediate (Basal):</b> NPH (Humulin N, Insulatard). Durasi 8-12 jam.</li>
+                            <li><b>Kerja Panjang & Ultra Panjang (Basal):</b> Glargine, Detemir, Degludec. Hampir tanpa puncak (*peakless*), meniru sekresi basal 24 jam.</li>
+                            <li><b>Premixed / Campuran:</b> Kombinasi tetap komponen prandial dan basal (misal Mixtard 30/70).</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-5 rounded-xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h4 class="font-bold text-medical-700 dark:text-medical-400">🧬 Agonis Reseptor GLP-1 (GLP-1 RA)</h4>
+                        <ul class="list-disc pl-4 text-xs space-y-2">
+                            <li><b>Mekanisme Kerja:</b> Meniru kerja hormon inkretin endogen, merangsang sekresi insulin dependen-glukosa, menekan sekresi glukagon, memperlambat pengosongan lambung, dan menginduksi rasa kenyang di hipotalamus.</li>
+                            <li><b>Keunggulan:</b> Sangat efektif menurunkan berat badan serta menurunkan risiko kardiovaskular.</li>
+                            <li><b>Contoh Sediaan:</b> Liraglutide (Victoza) diberikan 1 kali sehari subkutan.</li>
+                            <li><b>Efek Samping:</b> Mual, muntah, diare (terutama pada awal titrasi dosis).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. INTERACTIVE QUIZ (10 SOAL) -->
+            <section id="quiz-section" class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-medical-600 font-bold text-xs uppercase tracking-wider">Exam Simulation</span>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Latihan 10 Soal Ujian Komprehensif Farmakologi Endokrin</h3>
+                    </div>
+                    <span id="quizScore" class="bg-medical-100 text-medical-800 dark:bg-medical-900 dark:text-medical-200 px-3 py-1 rounded-lg text-xs font-bold">Skor Total: 0 / 10</span>
+                </div>
+
+                <!-- SOAL 1 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q1">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>1.</b> Manakah golongan obat antidiabetik oral yang direkomendasikan sebagai lini pertama (*first-line*) pada sebagian besar pasien DM Tipe 2?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q1" value="A" class="mr-2"> A. Golongan obat sulfonilurea generasi kedua</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q1" value="B" class="mr-2"> B. Golongan obat biguanid yaitu metformin</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q1" value="C" class="mr-2"> C. Golongan obat tiazolidinedion glitazon</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q1" value="D" class="mr-2"> D. Golongan obat penghambat enzim DPP-4</label>
+                    </div>
+                    <button onclick="checkSingle(1, 'B')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-1" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 2 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q2">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>2.</b> Obat golongan Sulfonilurea manakah yang memiliki profil keamanan paling baik dan paling banyak dipilih pada pasien DM Tipe 2 dengan gagal ginjal kronik?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q2" value="A" class="mr-2"> A. Menggunakan sediaan obat Glibenklamid</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q2" value="B" class="mr-2"> B. Menggunakan sediaan obat Gliquidone</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q2" value="C" class="mr-2"> C. Menggunakan sediaan obat Glimepiride</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q2" value="D" class="mr-2"> D. Menggunakan sediaan obat Klorpropamid</label>
+                    </div>
+                    <button onclick="checkSingle(2, 'B')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-2" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 3 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q3">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>3.</b> Apakah mekanisme kerja utama dari obat antidiabetik oral golongan penghambat SGLT-2 di dalam tubuh?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q3" value="A" class="mr-2"> A. Merangsang sekresi insulin langsung dari sel beta</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q3" value="B" class="mr-2"> B. Menghambat reabsorpsi glukosa di tubulus ginjal</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q3" value="C" class="mr-2"> C. Menurunkan resistensi insulin di jaringan otot</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q3" value="D" class="mr-2"> D. Memperlambat pencernaan karbohidrat di usus halus</label>
+                    </div>
+                    <button onclick="checkSingle(3, 'B')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-3" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 4 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q4">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>4.</b> Manakah kondisi klinis yang merupakan kontraindikasi mutlak dari pemberian obat Tiazolidinedion (TZD)?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q4" value="A" class="mr-2"> A. Riwayat hipertensi terkontrol dengan baik</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q4" value="B" class="mr-2"> B. Gagal jantung kongestif kelas NYHA III-IV</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q4" value="C" class="mr-2"> C. Dislipidemia dengan kadar trigliserida tinggi</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q4" value="D" class="mr-2"> D. Obesitas sentral dengan resistensi insulin</label>
+                    </div>
+                    <button onclick="checkSingle(4, 'B')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-4" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 5 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q5">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>5.</b> Apakah efek samping gastrointestinal khas yang sering dikeluhkan pasien saat pertama kali mengonsumsi obat Acarbose?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q5" value="A" class="mr-2"> A. Konstipasi berat dan penurunan motilitas usus</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q5" value="B" class="mr-2"> B. Flatulen, kembung, serta perut bergas (*bloating*)</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q5" value="C" class="mr-2"> C. Peningkatan nafsu makan dan rasa lapar ekstrem</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q5" value="D" class="mr-2"> D. Ulkus peptikum dan perdarahan saluran cerna</label>
+                    </div>
+                    <button onclick="checkSingle(5, 'B')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-5" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 6 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q6">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>6.</b> Manakah jenis sediaan insulin eksogen yang dikategorikan sebagai insulin basal dengan profil kerja hampir tanpa puncak (*peakless*)?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q6" value="A" class="mr-2"> A. Insulin Regular (Human Soluble)</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q6" value="B" class="mr-2"> B. Insulin Glargine atau Detemir</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q6" value="C" class="mr-2"> C. Insulin Lispro atau Aspart</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q6" value="D" class="mr-2"> D. Insulin Campuran Premixed 30/70</label>
+                    </div>
+                    <button onclick="checkSingle(6, 'B')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-6" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 7 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q7">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>7.</b> Apakah fungsi utama dari penambahan obat golongan penghambat DPP-4 dalam manajemen farmakoterapi diabetes?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q7" value="A" class="mr-2"> A. Mencegah degradasi hormon inkretin GLP-1</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q7" value="B" class="mr-2"> B. Meningkatkan ekskresi asam urat ginjal</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q7" value="C" class="mr-2"> C. Menghambat absorpsi lemak total di usus</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q7" value="D" class="mr-2"> D. Mempercepat metabolisme glukosa hepar</label>
+                    </div>
+                    <button onclick="checkSingle(7, 'A')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-7" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 8 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q8">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>8.</b> Manakah komplikasi metabolik akut serius yang harus diwaspadai pada penggunaan Metformin jika pasien mengalami gagal ginjal berat atau dehidrasi?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q8" value="A" class="mr-2"> A. Ketoasidosis diabetik murni</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q8" value="B" class="mr-2"> B. Asidosis laktat (MALA)</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q8" value="C" class="mr-2"> C. Sindrom hiperosmolar hiperglikemik</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q8" value="D" class="mr-2"> D. Hipoglikemia refrakter berat</label>
+                    </div>
+                    <button onclick="checkSingle(8, 'B')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-8" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 9 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q9">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>9.</b> Manakah keuntungan klinis tambahan yang menonjol dari obat golongan Agonis Reseptor GLP-1 (GLP-1 RA) selain mengontrol glukosa darah?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q9" value="A" class="mr-2"> A. Menyebabkan peningkatan berat badan signifikan</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q9" value="B" class="mr-2"> B. Menurunkan berat badan dan proteksi kardiovaskular</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q9" value="C" class="mr-2"> C. Meningkatkan tekanan darah sistolik sistemik</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q9" value="D" class="mr-2"> D. Mempercepat waktu pengosongan usus halus</label>
+                    </div>
+                    <button onclick="checkSingle(9, 'B')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-9" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+                <!-- SOAL 10 -->
+                <div class="space-y-4 p-5 rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700" id="box-q10">
+                    <p class="text-sm font-semibold text-slate-800 dark:text-white">
+                        <b>10.</b> Kapan waktu penyuntikan yang paling tepat untuk jenis insulin prandial kerja cepat (Rapid-Acting seperti Lispro atau Aspart)?
+                    </p>
+                    <div class="space-y-2 text-sm">
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q10" value="A" class="mr-2"> A. Disuntikkan tepat sebelum atau sesaat makan</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q10" value="B" class="mr-2"> B. Disuntikkan tepat 30 menit sebelum makan</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q10" value="C" class="mr-2"> C. Disuntikkan rutin 2 jam setelah makan pagi</label>
+                        <label class="block p-3 rounded-lg border border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition"><input type="radio" name="q10" value="D" class="mr-2"> D. Disuntikkan hanya pada tengah malam hari</label>
+                    </div>
+                    <button onclick="checkSingle(10, 'A')" class="px-4 py-2 bg-medical-600 hover:bg-medical-700 text-white font-bold text-xs rounded-lg transition shadow-sm">Periksa Jawaban</button>
+                    <div id="feedback-10" class="hidden mt-3 p-4 rounded-lg text-xs space-y-2"></div>
+                </div>
+
+            </section>
+
+            <!-- 7. QUICK REVIEW -->
+            <section id="quick-review" class="bg-gradient-to-br from-medical-600 to-medical-800 text-white p-6 md:p-8 rounded-2xl shadow-lg space-y-4">
+                <h3 class="text-xl font-bold flex items-center gap-2">If You Only Have 5 Minutes (Quick Review)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm space-y-1">
+                        <span class="font-bold block text-medical-200">Lini Pertama Terapi</span>
+                        <p>Metformin (Biguanid) + modifikasi gaya hidup (kecuali ada kontraindikasi mutlak).</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm space-y-1">
+                        <span class="font-bold block text-medical-200">Sulfonilurea & Gagal Ginjal</span>
+                        <p>Pilih Gliquidone karena diekskresikan lewat empedu (95%), hindari Glibenklamid.</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm space-y-1">
+                        <span class="font-bold block text-medical-200">SGLT-2i & GLP-1 RA</span>
+                        <p>Unggul untuk proteksi kardiorenal, gagal jantung, CKD, dan penurunan berat badan.</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm space-y-1">
+                        <span class="font-bold block text-medical-200">Insulin Basal vs Prandial</span>
+                        <p>Basal (Glargine/Degludec) untuk puasa/malam; Prandial (Lispro/Aspart) untuk lonjakan pascamakan.</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-7xl mx-auto px-4 py-8 text-center text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-800 mt-12">
+        Interactive Medical Study Companion • Blok Endokrin & Metabolik • FK UMS • Offline Ready
+    </footer>
+
+    <!-- JavaScript Interactivity -->
+    <script>
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const themeToggle = document.getElementById('themeToggle');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                themeToggle.innerText = 'Mode Terang';
+            } else {
+                html.classList.add('dark');
+                themeToggle.innerText = 'Mode Gelap';
+            }
+        }
+
+        let totalScore = 0;
+        const answeredState = {};
+
+        function checkSingle(qNum, correctOpt) {
+            const radios = document.getElementsByName('q' + qNum);
+            let userVal = '';
+            for (const r of radios) {
+                if (r.checked) userVal = r.value;
+            }
+
+            const feedback = document.getElementById('feedback-' + qNum);
+            feedback.classList.remove('hidden');
+
+            if (!userVal) {
+                feedback.className = "mt-3 p-4 rounded-lg text-xs bg-amber-50 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200";
+                feedback.innerHTML = "Silakan pilih salah satu opsi jawaban terlebih dahulu.";
+                return;
+            }
+
+            if (!answeredState[qNum]) {
+                answeredState[qNum] = true;
+                if (userVal === correctOpt) {
+                    totalScore++;
+                    feedback.className = "mt-3 p-4 rounded-lg text-xs bg-emerald-50 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200 border border-emerald-200";
+                    feedback.innerHTML = "<b>BENAR!</b><br>Jawaban Anda sudah tepat dan sesuai dengan prinsip farmakoterapi diabetes.";
+                } else {
+                    feedback.className = "mt-3 p-4 rounded-lg text-xs bg-rose-50 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200 border border-rose-200";
+                    feedback.innerHTML = "<b>KURANG TEPAT.</b> Jawaban yang benar adalah opsi <b>" + correctOpt + "</b>.";
+                }
+                document.getElementById('quizScore').innerText = "Skor Total: " + totalScore + " / 10";
+            }
+        }
+
+        window.addEventListener('scroll', function() {
+            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+            document.getElementById('progressText').innerText = Math.round(scrolled) + '%';
+        });
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            const sections = document.querySelectorAll('.searchable-content > section');
+            sections.forEach(function(sec) {
+                const text = sec.innerText.toLowerCase();
+                if (text.includes(term) || term === '') {
+                    sec.style.display = '';
+                } else {
+                    sec.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
